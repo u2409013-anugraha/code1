@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
+
+/* Bubble Sort (for Binary Search) */
+void bubbleSort(int a[], int n)
+{
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - i - 1; j++)
+            if (a[j] > a[j + 1])
+            {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+}
+
+
+/* Linear Search */
+int linearSearch(int a[], int n, int key)
+{
+    for (int i = 0; i < n; i++)
+        if (a[i] == key)
+            return i;
+    return -1;
+}
+
+
+/* Binary Search */
+int binarySearch(int a[], int n, int key)
+{
+    int low = 0, high = n - 1, mid;
+    while (low <= high)
+    {
+        mid = (low + high) / 2;
+        if (a[mid] == key)
+            return mid;
+        else if (a[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+
+
+int main()
+{
+    int sizes[] = {100, 1000, 10000, 100000};
+    int a[100000], b[100000];
+    clock_t start, end;
+    double lt, bt;
+    int key;
+
+
+    printf("Size\tLinear Search Time\tBinary Search Time\n");
+
+
+    for (int s = 0; s < 4; s++)
+    {
+        int n = sizes[s];
+
+
+        /* Generate random inputs */
+        for (int i = 0; i < n; i++)
+        {
+            a[i] = rand() % n;
+            b[i] = a[i];
+        }
+
+
+        key = a[n / 2];   // search element guaranteed to exist
+
+
+        /* Linear Search Time */
+        start = clock();
+        linearSearch(a, n, key);
+        end = clock();
+        lt = (double)(end - start) / CLOCKS_PER_SEC;
+
+
+        /* Sort array for Binary Search */
+        bubbleSort(b, n);
+
+
+        /* Binary Search Time */
+        start = clock();
+        binarySearch(b, n, key);
+        end = clock();
+        bt = (double)(end - start) / CLOCKS_PER_SEC;
+
+
+        printf("%d\t%f\t\t%f\n", n, lt, bt);
+    }
+
+
+    return 0;
+}
